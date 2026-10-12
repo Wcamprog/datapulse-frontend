@@ -1,1 +1,40 @@
-<p>mapa-riesgo works!</p>
+<div class="mapa-wrapper">
+  <div id="mapa-latam" class="mapa-container"></div>
+
+  <div class="mapa-leyenda">
+    <span class="leyenda-titulo">Nivel de Riesgo (IRPC)</span>
+    <div class="leyenda-items">
+      <div class="leyenda-item">
+        <span class="punto bajo"></span>
+        <span>Bajo (0 - 25)</span>
+      </div>
+      <div class="leyenda-item">
+        <span class="punto moderado"></span>
+        <span>Moderado (26 - 50)</span>
+      </div>
+      <div class="leyenda-item">
+        <span class="punto alto"></span>
+        <span>Alto (51 - 75)</span>
+      </div>
+      <div class="leyenda-item">
+        <span class="punto critico"></span>
+        <span>Crítico (76 - 100)</span>
+      </div>
+    </div>
+  </div>
+
+  @if (paisSeleccionado) {
+    <div class="pais-detalle-card">
+      <div class="detalle-header">
+        <strong>{{ paisSeleccionado.nombre }}</strong>
+        <span class="badge" [style.background-color]="paisSeleccionado.color">
+          {{ paisSeleccionado.nivel }}
+        </span>
+      </div>
+      <p class="detalle-irpc">
+        Índice IRPC: <span>{{ paisSeleccionado.irpc }}</span> / 100
+      </p>
+      <button mat-button color="primary" (click)="paisSeleccionado = null">Cerrar</button>
+    </div>
+  }
+</div>

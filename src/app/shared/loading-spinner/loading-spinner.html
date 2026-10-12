@@ -1,1 +1,6 @@
-<p>loading-spinner works!</p>
+<div class="spinner-container" [class.overlay]="overlay">
+  <mat-spinner [diameter]="diameter"></mat-spinner>
+  @if (message) {
+    <p class="loading-message">{{ message }}</p>
+  }
+</div>

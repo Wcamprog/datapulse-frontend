@@ -1,0 +1,54 @@
+.dashboard-container {
+  height: 100vh; 
+}
+
+.sidenav {
+  width: 260px;
+  background-color: #fafafa;
+  border-right: 1px solid #e0e0e0;
+}
+
+.logo-container {
+  padding: 24px;
+  text-align: center;
+  background-color: #3f51b5; 
+  color: white;
+}
+
+.logo-container h2 {
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.content-area {
+  padding: 24px;
+}
+
+.menu-active {
+  background-color: #e0e0e0;
+  border-radius: 25px;
+}
+
+.sidenav a.menu-active {
+  background-color: #dbe4ff !important;
+  border-radius: 25px;
+}
+
+.sidenav a.mat-mdc-list-item:not(.menu-active):focus:not(:focus-visible)::before {
+  opacity: 0 !important;
+}
+
+.sidenav a.mat-mdc-list-item:focus-visible {
+  outline: 2px solid #4053b5;
+  outline-offset: -2px;
+}
+
+mat-sidenav-content {
+  position: relative;
+  z-index: 1000;
+}

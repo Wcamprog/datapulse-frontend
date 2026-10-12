@@ -1,0 +1,27 @@
+@if (isOpen) {
+  <div class="modal-backdrop" (click)="close()">
+    <div class="modal-container" [style.max-width]="maxWidth" (click)="$event.stopPropagation()">
+      
+      <div class="modal-header">
+        <div class="modal-title-container">
+          @if (icon) {
+            <mat-icon color="primary">{{ icon }}</mat-icon>
+          }
+          <h3>{{ title }}</h3>
+        </div>
+        <button mat-icon-button (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <ng-content select="[modal-body]"></ng-content>
+      </div>
+
+      <div class="modal-footer">
+        <ng-content select="[modal-footer]"></ng-content>
+      </div>
+
+    </div>
+  </div>
+}

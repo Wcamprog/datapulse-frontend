@@ -1,0 +1,37 @@
+<mat-sidenav-container class="dashboard-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="logo-container">
+      <h2>DataPulse</h2>
+    </div>
+    <mat-nav-list>
+      @for (column of columns; track column.route) {
+        <a
+          mat-list-item
+          [routerLink]="column.route"
+          routerLinkActive="menu-active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <mat-icon matListItemIcon>{{ column.icon }}</mat-icon>
+          <div matListItemTitle>{{ column.title }}</div>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    
+    <mat-toolbar color="primary">
+      <span>Panel de Control - DataPulse Latam</span>
+      <span class="spacer"></span>
+      <button mat-icon-button (click)="logout()" title="Cerrar sesión">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <app-global-alert></app-global-alert>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

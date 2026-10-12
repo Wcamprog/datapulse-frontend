@@ -1,1 +1,24 @@
-<p>kpi-cards works!</p>
+<div class="kpi-grid">
+  @for (kpi of kpiItems; track kpi.id) {
+    <mat-card class="kpi-card">
+      <div 
+        class="kpi-icon-container" 
+        [class]="kpi.colorClass"
+        [style.background-color]="kpi.customColor ? kpi.customColor + '1a' : null"
+        [style.color]="kpi.customColor || null">
+        <mat-icon>{{ kpi.icon }}</mat-icon>
+      </div>
+
+      <div class="kpi-info">
+        <span class="kpi-label">{{ kpi.label }}</span>
+        <h3 class="kpi-value" [style.color]="kpi.customColor || null">
+          {{ kpi.value }}
+          @if (kpi.suffix) {
+            <small> {{ kpi.suffix }}</small>
+          }
+        </h3>
+        <span class="kpi-subtitle">{{ kpi.subtitle }}</span>
+      </div>
+    </mat-card>
+  }
+</div>

@@ -1,0 +1,112 @@
+<app-modal 
+  [isOpen]="isOpen" 
+  [title]="'Agregar Nuevo País'" 
+  [icon]="'add_location_alt'" 
+  [maxWidth]="'75%'" 
+  (onClose)="cancelar()">
+
+  <div modal-body class="crear-pais-body">
+    <div class="search-bar-row">
+      <mat-form-field appearance="outline" class="search-input">
+        <mat-label>Buscar en REST Countries (ej: Argentina, Brasil, CO)</mat-label>
+        <input matInput [(ngModel)]="queryBusqueda" (keyup.enter)="buscarPais()" placeholder="Nombre o código ISO">
+        <button mat-icon-button matSuffix (click)="buscarPais()" [disabled]="cargando">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="btn-buscar" (click)="buscarPais()" [disabled]="cargando">
+        Buscar
+      </button>
+    </div>
+
+    <div class="chips-container">
+      <span class="chips-label">Sugeridos:</span>
+      @for (s of sugerenciasLatam; track s.iso) {
+        <button mat-stroked-button type="button" class="chip-btn" (click)="buscarPais(s.nombre)">
+          {{ s.nombre }} ({{ s.iso }})
+        </button>
+      }
+    </div>
+
+    <div class="form-and-map-grid">
+      <div class="fields-column">
+        <div class="row-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Código ISO</mat-label>
+            <input matInput [(ngModel)]="paisForm.codigo_iso" readonly>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="paisForm.nombre">
+          </mat-form-field>
+        </div>
+
+        <div class="row-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Cód. Moneda</mat-label>
+            <input matInput [(ngModel)]="paisForm.moneda_codigo">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Moneda</mat-label>
+            <input matInput [(ngModel)]="paisForm.moneda_nombre">
+          </mat-form-field>
+        </div>
+
+        <div class="row-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Región</mat-label>
+            <mat-select [(ngModel)]="paisForm.region">
+              <mat-option value="ANDINA">ANDINA</mat-option>
+              <mat-option value="CONO_SUR">CONO_SUR</mat-option>
+              <mat-option value="CENTROAMERICA">CENTROAMERICA</mat-option>
+              <mat-option value="CARIBE">CARIBE</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Población</mat-label>
+            <input matInput type="number" [(ngModel)]="paisForm.poblacion">
+          </mat-form-field>
+        </div>
+
+        <div class="row-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Latitud</mat-label>
+            <input matInput [(ngModel)]="paisForm.latitud">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Longitud</mat-label>
+            <input matInput [(ngModel)]="paisForm.longitud">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="map-column">
+        <div class="map-header">
+          <mat-icon>place</mat-icon>
+          <span>Ubicación Geográfica Detectada</span>
+        </div>
+        <div id="mini-mapa-preview" class="mini-map"></div>
+      </div>
+    </div>
+  </div>
+
+  <div modal-footer class="modal-footer-actions">
+    <button mat-button (click)="cancelar()" [disabled]="guardando">Cancelar</button>
+    <button 
+      mat-flat-button 
+      color="primary" 
+      (click)="guardar()" 
+      [disabled]="!paisForm.codigo_iso || guardando">
+      @if (guardando) {
+        Guardando...
+      } @else {
+        Guardar País
+      }
+    </button>
+  </div>
+</app-modal>

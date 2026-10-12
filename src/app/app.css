@@ -1,0 +1,23 @@
+@import 'leaflet/dist/leaflet.css';
+
+.global-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 15, 15, 0.075);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
+.dashboard-content, .main-content, .layout-body {
+  position: relative;
+}
+
+.sidebar, .nav-sidebar, aside {
+  z-index: 10;
+}

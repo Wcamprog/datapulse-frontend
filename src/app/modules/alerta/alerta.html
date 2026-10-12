@@ -1,0 +1,13 @@
+@if (alertaService.currentAlert(); as alert) {
+  <div class="global-toast-container">
+    <div class="toast-banner {{ alert.type }}">
+      <mat-icon class="toast-icon">
+        {{ alert.type === 'success' ? 'check_circle' : alert.type === 'error' ? 'error' : 'warning' }}
+      </mat-icon>
+      <span class="toast-text">{{ alert.text }}</span>
+      <button mat-icon-button class="toast-close" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+}
