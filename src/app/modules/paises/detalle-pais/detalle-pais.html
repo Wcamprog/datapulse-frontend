@@ -1,1 +1,179 @@
-<p>detalle-pais works!</p>
+<div class="page-header-container">
+  <div class="page-header">
+    <button mat-icon-button (click)="volver()" class="btn-back" title="Volver al listado">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h2>Detalle de País: {{ pais?.nombre || codigoIso }}</h2>
+      <p>Perfil macroeconómico, análisis cambiario e Índice de Riesgo País Compuesto (IRPC).</p>
+    </div>
+  </div>
+</div>
+
+@if (isLoading) {
+  <div class="card-container loading-box">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Cargando análisis detallado del país...</span>
+  </div>
+} @else {
+  <div class="card-container general-info-card">
+    <div class="flag-container">
+      <img [src]="getBanderaUrl()" [alt]="pais?.nombre" class="country-flag" (error)="$any($event.target).style.display='none'">
+    </div>
+    <div class="general-info-grid">
+      <div class="info-item">
+        <span class="label">Código ISO</span>
+        <strong>{{ pais?.codigo_iso }}</strong>
+      </div>
+      <div class="info-item">
+        <span class="label">Región</span>
+        <span class="role-badge" [ngClass]="pais?.region?.toLowerCase()">{{ pais?.region }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Población</span>
+        <strong>{{ (pais?.poblacion | number) || 'N/A' }} hab.</strong>
+      </div>
+      <div class="info-item">
+        <span class="label">Moneda</span>
+        <strong>{{ pais?.moneda_codigo }} ({{ pais?.moneda_nombre }})</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-container irpc-banner">
+    <div class="irpc-score-box">
+      <span class="irpc-label">Índice de Riesgo Compuesto</span>
+      <h1 class="irpc-value">{{ riesgo.compuesto }}</h1>
+      <span class="status-indicator" [ngClass]="riesgo.nivel.toLowerCase()">
+        Nivel {{ riesgo.nivel }}
+      </span>
+    </div>
+    <div class="scores-breakdown">
+      <div class="score-bar-item">
+        <div class="score-header">
+          <span>Score Económico (40%)</span>
+          <strong>{{ riesgo.economico }} / 100</strong>
+        </div>
+        <div class="progress-bg"><div class="progress-bar red" [style.width.%]="riesgo.economico"></div></div>
+      </div>
+      <div class="score-bar-item">
+        <div class="score-header">
+          <span>Score Cambiario (30%)</span>
+          <strong>{{ riesgo.cambiario }} / 100</strong>
+        </div>
+        <div class="progress-bg"><div class="progress-bar orange" [style.width.%]="riesgo.cambiario"></div></div>
+      </div>
+      <div class="score-bar-item">
+        <div class="score-header">
+          <span>Score Estabilidad (30%)</span>
+          <strong>{{ riesgo.estabilidad }} / 100</strong>
+        </div>
+        <div class="progress-bg"><div class="progress-bar blue" [style.width.%]="riesgo.estabilidad"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <!-- Inflación -->
+    <div class="kpi-card">
+      <div class="kpi-icon"><mat-icon>trending_up</mat-icon></div>
+      <div class="kpi-data">
+        <span class="kpi-title">Inflación ({{ indicadoresActuales['INFLACION']?.anio || 'Actual' }})</span>
+        <h3>{{ indicadoresActuales['INFLACION'] ? (indicadoresActuales['INFLACION'].valor + '%') : 'N/D' }}</h3>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon blue"><mat-icon>work_outline</mat-icon></div>
+      <div class="kpi-data">
+        <span class="kpi-title">Desempleo ({{ indicadoresActuales['DESEMPLEO']?.anio || 'Actual' }})</span>
+        <h3>{{ indicadoresActuales['DESEMPLEO'] ? (indicadoresActuales['DESEMPLEO'].valor + '%') : 'N/D' }}</h3>
+      </div>
+    </div>
+
+    <!-- Deuda / PIB -->
+    <div class="kpi-card">
+      <div class="kpi-icon orange"><mat-icon>account_balance</mat-icon></div>
+      <div class="kpi-data">
+        <span class="kpi-title">Deuda / PIB ({{ indicadoresActuales['DEUDA_PIB']?.anio || 'Actual' }})</span>
+        <h3>{{ indicadoresActuales['DEUDA_PIB'] ? (indicadoresActuales['DEUDA_PIB'].valor + '%') : 'N/D' }}</h3>
+      </div>
+    </div>
+
+    <!-- PIB per Cápita -->
+    <div class="kpi-card">
+      <div class="kpi-icon purple"><mat-icon>payments</mat-icon></div>
+      <div class="kpi-data">
+        <span class="kpi-title">PIB per Cápita ({{ indicadoresActuales['PIB_PERCAPITA']?.anio || 'Actual' }})</span>
+        <h3>
+          {{ indicadoresActuales['PIB_PERCAPITA'] ? ('$' + (indicadoresActuales['PIB_PERCAPITA'].valor | number:'1.0-2')) : 'N/D' }}
+        </h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="card-container chart-card">
+      <h3>Histórico de Indicadores (5 años)</h3>
+      <div class="chart-canvas-container">
+        <canvas #graficoIndicadoresCanvas></canvas>
+      </div>
+    </div>
+
+    <div class="card-container chart-card">
+      <h3>Tipo de Cambio (Últimos 30 días)</h3>
+      <div class="chart-canvas-container">
+        <canvas #graficoCambioCanvas></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-container table-card">
+    <div class="section-subhead">
+      <h3>Histórico de Evaluaciones IRPC</h3>
+      <p>Cálculos almacenados en la base de datos para este país.</p>
+    </div>
+    <table mat-table [dataSource]="historicoIrpc" class="mat-elevation-z0 custom-table">
+      <ng-container matColumnDef="periodo">
+        <th mat-header-cell *matHeaderCellDef> Fecha Cálculo </th>
+        <td mat-cell *matCellDef="let h"> <strong>{{ h.periodo }}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score_economico">
+        <th mat-header-cell *matHeaderCellDef> Score Económico (40%) </th>
+        <td mat-cell *matCellDef="let h"> {{ h.score_economico }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score_cambiario">
+        <th mat-header-cell *matHeaderCellDef> Score Cambiario (30%) </th>
+        <td mat-cell *matCellDef="let h"> {{ h.score_cambiario }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="score_estabilidad">
+        <th mat-header-cell *matHeaderCellDef> Score Estabilidad (30%) </th>
+        <td mat-cell *matCellDef="let h"> {{ h.score_estabilidad }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="indice_compuesto">
+        <th mat-header-cell *matHeaderCellDef> IRPC Final </th>
+        <td mat-cell *matCellDef="let h"> <strong>{{ h.indice_compuesto }}</strong> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nivel_riesgo">
+        <th mat-header-cell *matHeaderCellDef class="text-right"> Nivel de Riesgo </th>
+        <td mat-cell *matCellDef="let h" class="text-right">
+          <span class="role-badge" [ngClass]="h.nivel_riesgo.toLowerCase()">{{ h.nivel_riesgo }}</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsIrpc"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsIrpc;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" colspan="6">
+          No hay evaluaciones históricas registradas para este país. Ejecuta el recálculo desde el sistema.
+        </td>
+      </tr>
+    </table>
+  </div>
+}

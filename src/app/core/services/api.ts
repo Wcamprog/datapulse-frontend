@@ -32,6 +32,9 @@ export class Api {
   put<T>(endpoint: string, body: any): Promise<T> {
     return this.toPromise<T>(this.http.put<any>(`${this.baseUrl}/${endpoint}`, body));
   }
+  patch<T>(endpoint: string, body: any): Promise<T> {
+    return this.toPromise<T>(this.http.patch<any>(`${this.baseUrl}/${endpoint}`, body));
+  }
 
   delete<T>(endpoint: string): Promise<T> {
     return this.toPromise<T>(this.http.delete<any>(`${this.baseUrl}/${endpoint}`));

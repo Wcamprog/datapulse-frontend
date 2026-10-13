@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CrearPais } from './crear-pais/crear-pais';
-
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,8 @@ import { CrearPais } from './crear-pais/crear-pais';
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
-    FormsModule
+    FormsModule,
+    MatPaginatorModule
   ]
 })
 export class PaisesModule { }

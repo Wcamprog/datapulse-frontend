@@ -1,1 +1,18 @@
-<p>confirm-dialog works!</p>
+<app-modal 
+  [isOpen]="isOpen" 
+  [title]="title" 
+  [icon]="'help_outline'" 
+  [maxWidth]="'450px'" 
+  (onClose)="onCancel()">
+
+  <div modal-body class="confirm-body">
+    <p>{{ message }}</p>
+  </div>
+
+  <div modal-footer class="confirm-footer">
+    <button mat-button (click)="onCancel()">{{ cancelText }}</button>
+    <button mat-flat-button [color]="confirmColor" (click)="onConfirm()">
+      {{ confirmText }}
+    </button>
+  </div>
+</app-modal>

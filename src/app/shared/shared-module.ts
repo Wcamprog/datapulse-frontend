@@ -6,11 +6,13 @@ import { MatButtonModule } from '@angular/material/button'; // <--- Importar
 import { MatTableModule } from '@angular/material/table';
 import { LoadingSpinner } from './loading-spinner/loading-spinner';
 import { Modal } from './modal/modal';
+import { ConfirmDialog } from './confirm-dialog/confirm-dialog';
 
 @NgModule({
   declarations: [
     LoadingSpinner,
-    Modal
+    Modal,
+    ConfirmDialog
   ],
   imports: [
     CommonModule,
@@ -24,7 +26,8 @@ import { Modal } from './modal/modal';
     Modal,
     MatIconModule,  
     MatButtonModule,
-    MatTableModule 
+    MatTableModule,
+    ConfirmDialog
   ]
 })
 export class SharedModule {}

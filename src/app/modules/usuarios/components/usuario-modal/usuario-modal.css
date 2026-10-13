@@ -1,0 +1,26 @@
+.usuario-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 10px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.row-2 {
+  display: flex;
+  gap: 12px;
+}
+
+.row-2 mat-form-field {
+  flex: 1;
+}
+
+.actions-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
+}

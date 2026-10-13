@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Dashboard } from './dashboard/dashboard';
 import { ResumenGeneral } from './resumen-general/resumen-general';
+import { adminGuard } from '../../core/guards/admin-guard';
 
 const routes: Routes = [
   {
@@ -19,6 +20,11 @@ const routes: Routes = [
       {
         path: 'listar-portafolios',
         loadChildren: () => import('../portafolios/portafolios-module').then(m => m.PortafoliosModule)
+      },
+      {
+        path: 'usuarios',
+        loadChildren: () => import('../usuarios/usuarios-module').then(m => m.UsuariosModule),
+        canActivate: [adminGuard]
       }
     ]
   }

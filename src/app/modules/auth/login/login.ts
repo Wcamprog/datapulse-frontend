@@ -24,12 +24,12 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -38,21 +38,21 @@ export class Login implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    const { username, password } = this.loginForm.value;
+    const { email, password } = this.loginForm.value;
 
-    this.authService.login(username, password).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.router.navigate(['/dashboard']); 
-      },
-      error: (err) => {
-        this.isLoading = false;
-        if (err.status === 401) {
-          this.errorMessage = 'Credenciales inválidas. Verifica tu usuario y contraseña.';
-        } else {
-          this.errorMessage = 'Ocurrió un error de conexión con el servidor.';
-        }
+    try {
+      await this.authService.login(email, password);
+      this.isLoading = false;
+      await this.router.navigate(['/dashboard']);
+    } catch (err: any) {
+      this.isLoading = false;
+      if (err?.status === 401) {
+        this.errorMessage = 'Credenciales inválidas. Verifica tu correo y contraseña.';
+      } else if (err?.error?.detail) {
+        this.errorMessage = err.error.detail;
+      } else {
+        this.errorMessage = 'Ocurrió un error al conectar con el servidor.';
       }
-    });
+    }
   }
 }

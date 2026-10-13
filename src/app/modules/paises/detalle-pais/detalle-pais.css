@@ -1,0 +1,234 @@
+.page-header-container {
+  margin-bottom: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-back {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.page-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.page-header p {
+  color: #64748b;
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.card-container {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px;
+  color: #64748b;
+}
+
+.general-info-card {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.country-flag {
+  width: 90px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.general-info-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-item .label {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.irpc-banner {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+}
+
+.irpc-score-box {
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.15);
+  padding-right: 36px;
+}
+
+.irpc-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.irpc-value {
+  font-size: 48px;
+  margin: 4px 0;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+.scores-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.progress-bg {
+  background: rgba(255, 255, 255, 0.1);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.progress-bar.red { background-color: #ef4444; }
+.progress-bar.orange { background-color: #f59e0b; }
+.progress-bar.blue { background-color: #3b82f6; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.kpi-icon.blue { background-color: #eff6ff; color: #3b82f6; }
+.kpi-icon.green { background-color: #ecfdf5; color: #10b981; }
+.kpi-icon.purple { background-color: #f3e8ff; color: #a855f7; }
+
+.kpi-data .kpi-title {
+  font-size: 12px;
+  color: #64748b;
+  display: block;
+}
+
+.kpi-data h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 4px 0 0;
+  color: #1e293b;
+}
+
+/* Gráficos */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.chart-canvas-container {
+  height: 280px;
+  position: relative;
+}
+
+/* Tabla */
+.table-card .section-subhead h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.table-card .section-subhead p {
+  color: #64748b;
+  margin: 4px 0 16px;
+  font-size: 13px;
+}
+
+.custom-table {
+  width: 100%;
+}
+
+.role-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.role-badge.medio { background-color: #fef3c7; color: #92400e; }
+.role-badge.alto { background-color: #fee2e2; color: #991b1b; }
+.role-badge.critico { background-color: #7f1d1d; color: #ffffff; }
+.role-badge.bajo { background-color: #dcfce7; color: #166534; }
+
+.text-right {
+  text-align: right;
+}

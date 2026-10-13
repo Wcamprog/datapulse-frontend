@@ -1,0 +1,54 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditando ? 'Editar Usuario' : 'Crear Nuevo Usuario'"
+  [icon]="isEditando ? 'manage_accounts' : 'person_add'"
+  [maxWidth]="'540px'"
+  (close)="cancelar()">
+
+  <div modal-body class="usuario-modal-body">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Nombre Completo</mat-label>
+      <input matInput [(ngModel)]="usuarioForm.nombre_completo" placeholder="Ej: Juan Pérez">
+      <mat-icon matSuffix>badge</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Correo Electrónico (Email)</mat-label>
+      <input matInput type="email" [(ngModel)]="usuarioForm.email" placeholder="usuario@datapulse.com">
+      <mat-icon matSuffix>mail</mat-icon>
+    </mat-form-field>
+
+    <div class="row-2">
+      <mat-form-field appearance="outline">
+        <mat-label>Rol Asignado</mat-label>
+        <mat-select [(ngModel)]="usuarioForm.rol">
+          @for (r of rolesDisponibles; track r.value) {
+            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+          }
+        </mat-select>
+        <mat-icon matSuffix>admin_panel_settings</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Estado de Cuenta</mat-label>
+        <mat-select [(ngModel)]="usuarioForm.activo">
+          <mat-option [value]="true">Activo</mat-option>
+          <mat-option [value]="false">Inactivo</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ isEditando ? 'Nueva Contraseña (dejar en blanco para mantener)' : 'Contraseña' }}</mat-label>
+      <input matInput type="password" [(ngModel)]="usuarioForm.password" placeholder="••••••••">
+      <mat-icon matSuffix>lock</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div modal-footer class="actions-footer">
+    <button mat-button (click)="cancelar()" [disabled]="guardando">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">
+      {{ guardando ? 'Guardando...' : (isEditando ? 'Actualizar Usuario' : 'Crear Usuario') }}
+    </button>
+  </div>
+</app-modal>

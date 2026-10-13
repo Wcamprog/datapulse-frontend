@@ -1,0 +1,114 @@
+<div class="page-header-container">
+  <div class="page-header">
+    <h2>Gestión de Usuarios</h2>
+    <p>Administración de cuentas, acceso y asignación de roles en DataPulse.</p>
+  </div>
+  <div class="header-actions">
+    <button mat-flat-button color="primary" (click)="abrirCrear()">
+      <mat-icon>person_add</mat-icon>
+      Nuevo Usuario
+    </button>
+  </div>
+</div>
+
+<div class="card-container">
+  <table mat-table [dataSource]="usuarios" class="mat-elevation-z2 custom-table">
+
+    <ng-container matColumnDef="nombre_completo">
+      <th mat-header-cell *matHeaderCellDef> Nombre Completo </th>
+      <td mat-cell *matCellDef="let u">
+        <div class="user-name-cell">
+          <mat-icon class="avatar-icon">account_circle</mat-icon>
+          <strong>{{ u.nombre_completo }}</strong>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Correo Electrónico </th>
+      <td mat-cell *matCellDef="let u"> {{ u.email }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="rol">
+      <th mat-header-cell *matHeaderCellDef> Rol </th>
+      <td mat-cell *matCellDef="let u">
+        <span class="role-badge" [ngClass]="u.rol?.toLowerCase()">
+          {{ u.rol }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="activo">
+      <th mat-header-cell *matHeaderCellDef> Estado </th>
+      <td mat-cell *matCellDef="let u">
+        <span class="status-indicator" [class.active]="u.activo" [class.inactive]="!u.activo">
+          <span class="status-dot"></span>
+          {{ u.activo ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="text-right"> Acciones </th>
+      <td mat-cell *matCellDef="let u" class="text-right">
+        <button mat-icon-button color="primary" (click)="abrirEditar(u)" title="Editar usuario">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          [color]="u.activo ? 'warn' : 'accent'"
+          (click)="cambiarEstado(u)"
+          [title]="u.activo ? 'Desactivar cuenta' : 'Activar cuenta'">
+          <mat-icon>{{ u.activo ? 'block' : 'check_circle' }}</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="solicitarEliminar(u)" title="Eliminar usuario">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    @if (isLoading) {
+      <tr class="mat-row">
+        <td class="mat-cell loading-row" colspan="5">
+          <mat-spinner diameter="32"></mat-spinner>
+          <span>Cargando usuarios registrados...</span>
+        </td>
+      </tr>
+    } @else {
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" colspan="5">
+          No hay usuarios registrados en el sistema.
+        </td>
+      </tr>
+    }
+  </table>
+
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="pageSizeOptions"
+    (page)="onPageChange($event)"
+    aria-label="Seleccionar página de usuarios"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>
+
+<app-usuario-modal
+  [isOpen]="isModalOpen"
+  [usuarioEditar]="usuarioSeleccionado"
+  (closed)="onModalUsuarioClosed($event)">
+</app-usuario-modal>
+
+<app-confirm-dialog
+  [isOpen]="isConfirmOpen"
+  [title]="'Eliminar Usuario'"
+  [message]="'¿Estás seguro de que deseas eliminar permanentemente a ' + usuarioParaEliminar?.nombre_completo + ' (' + usuarioParaEliminar?.email + ')?'"
+  [confirmText]="'Eliminar'"
+  [confirmColor]="'warn'"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-dialog>

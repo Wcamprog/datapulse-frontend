@@ -1,59 +1,84 @@
-# FrontendApp
+# DataPulse Latam - Frontend (Angular)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.26.
+Este repositorio contiene la Single Page Application (SPA) para DataPulse Latam. Consiste en un Dashboard interactivo que permite visualizar indicadores macroeconómicos, calcular niveles de riesgo mediante mapas interactivos y gestionar portafolios de inversión.
 
-## Development server
+## 🚀 Tecnologías Principales
+* Angular 16+
+* Angular Material (Componentes UI)
+* Chart.js (Gráficos interactivos)
+* Leaflet / D3.js (Mapas interactivos)
+* TypeScript
 
-To start a local development server, run:
+---
+
+## 🛠️ Despliegue en Entorno Local (Desarrollo)
+
+Sigue estos pasos para ejecutar la interfaz de usuario en tu máquina conectada al backend local.
+
+### Requisitos previos
+* Tener instalado [Node.js](https://nodejs.org/) (versión 18 o superior).
+* Tener instalado Angular CLI globalmente (`npm install -g @angular/cli`).
+* El **Backend** de DataPulse debe estar corriendo en el puerto 8000.
+
+### Paso 1: Instalar dependencias
+Abre tu terminal en la raíz de este proyecto y descarga los paquetes de Node:
 
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Paso 2: Configurar la URL del API
+Verifica que el archivo `src/environments/environment.ts` (y `environment.development.ts` si existe) apunte correctamente a tu servidor local de Django:
 
-## Code scaffolding
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8000/api'
+};
+```
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Paso 3: Levantar el servidor de desarrollo
+Inicia la aplicación ejecutando:
 
 ```bash
-ng generate component component-name
+ng serve --open
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+**¡Listo!** El comando abrirá automáticamente tu navegador en `http://localhost:4200/`. Cualquier cambio que hagas en el código fuente se recargará automáticamente.
 
-```bash
-ng generate --help
+---
+
+## 🌍 Despliegue en Producción
+
+Para compilar la aplicación y desplegarla en un servicio de hosting estático (como Vercel, Netlify, Firebase Hosting o AWS S3):
+
+### Paso 1: Configurar el entorno productivo
+Abre el archivo `src/environments/environment.ts` (o `environment.prod.ts` dependiendo de tu versión de Angular) y cambia la URL por el dominio real donde desplegaste tu backend:
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://api.midominio.com/api' // <--- URL real de tu Backend productivo
+};
 ```
 
-## Building
-
-To build the project run:
+### Paso 2: Generar el Build de Producción
+Ejecuta el siguiente comando para que Angular compile y minimice todos los archivos (HTML, CSS y JS):
 
 ```bash
 ng build
 ```
+*(Esto generará una carpeta llamada `dist/` en la raíz de tu proyecto, que contiene los archivos que debes subir a tu hosting).*
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Paso 3: Configuración de Rutas (SPA Rules)
+Como esto es una *Single Page Application*, las rutas son manejadas por Angular. Si un usuario recarga la página en una sub-ruta (ej. `/dashboard/paises`), el servidor web podría devolver un error 404. 
+Debes configurar tu proveedor de hosting para que redirija todo el tráfico a `index.html`:
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* **Vercel:** Crea un archivo `vercel.json` en la raíz con:
+  ```json
+  { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+  ```
+* **Netlify:** Crea un archivo `_redirects` en la carpeta `src` con:
+  ```text
+  /*    /index.html    200
+  ```

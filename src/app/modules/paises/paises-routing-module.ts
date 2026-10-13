@@ -9,7 +9,7 @@ const routes: Routes = [
     component: ListaPaises
   },
   {
-    path: ':id',
+    path: ':codigo_iso',
     component: DetallePais
   }
 ];

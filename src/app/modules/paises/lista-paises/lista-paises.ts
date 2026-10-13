@@ -1,13 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Paises as PaisesApiService } from '../../../core/services/pais';
+import { PageEvent } from '@angular/material/paginator';
+import { Paises as PaisService } from '../../../core/services/pais';
 import { Alerta as AlertaService } from '../../../core/services/alerta';
-
-interface Pais {
-  codigo_iso: string;
-  nombre: string;
-  moneda_codigo: string;
-  moneda_nombre: string;
-}
 
 @Component({
   selector: 'app-lista-paises',
@@ -16,18 +10,24 @@ interface Pais {
   standalone: false
 })
 export class ListaPaises implements OnInit {
-  displayedColumns = ['codigo_iso', 'nombre', 'moneda', 'acciones'];
-  dataSource: Pais[] = [];
+  paises: any[] = [];
+  displayedColumns: string[] = ['codigo_iso', 'nombre', 'moneda', 'region', 'acciones'];
+
   isLoading: boolean = false;
   isSyncing: boolean = false;
 
+  totalItems: number = 0;
+  pageSize: number = 10;
+  pageIndex: number = 0;
+  pageSizeOptions: number[] = [5, 10, 25];
+
   isModalOpen: boolean = false;
-  paisSeleccionado: any = null;
-  public isCrearPaisOpen: boolean = false;
+  paisSeleccionado: any | null = null;
+  isCrearPaisOpen: boolean = false;
 
   constructor(
-    private paisesService: PaisesApiService,
-    private alertaService: AlertaService,
+    private paisesService: PaisService,
+    private alerta: AlertaService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -36,32 +36,36 @@ export class ListaPaises implements OnInit {
   }
 
   async cargarPaises(): Promise<void> {
+    this.isLoading = true;
+    this.cdr.detectChanges();
     try {
-      this.isLoading = true;
-      this.dataSource = await this.paisesService.getPaises();
-    } catch (error) {
-      console.error('Error al cargar países', error);
-      this.alertaService.show('Error al cargar la lista de países.', 'error');
+      const res = await this.paisesService.getPaises(this.pageIndex + 1, this.pageSize);
+      this.paises = res.results;
+      this.totalItems = res.count;
+    } catch (err) {
+      this.alerta.show('Error al cargar la lista de países.', 'error');
     } finally {
       this.isLoading = false;
       this.cdr.detectChanges();
     }
   }
 
-  async sincronizar(): Promise<void> {
-    if (this.isSyncing) return;
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.cargarPaises();
+  }
 
-    this.isSyncing = true;
-    try {
-      const response = await this.paisesService.sincronizarIndicadores();
-      this.alertaService.show( response.mensaje ?? response.error, response.mensaje ? 'success' : 'error');
-      await this.cargarPaises();
-    } catch (error) {
-      console.error('Error al sincronizar indicadores', error);
-      this.alertaService.show('Ocurrió un error al sincronizar los indicadores.', 'error');
-    } finally {
-      this.isSyncing = false;
-      this.cdr.detectChanges();
+  abrirCrearPais(): void {
+    this.isCrearPaisOpen = true;
+    this.cdr.detectChanges();
+  }
+
+  onModalCrearPaisClosed(recargar: boolean): void {
+    this.isCrearPaisOpen = false;
+    this.cdr.detectChanges();
+    if (recargar) {
+      this.cargarPaises();
     }
   }
 
@@ -69,7 +73,6 @@ export class ListaPaises implements OnInit {
     this.paisSeleccionado = pais;
     this.isModalOpen = true;
     this.cdr.detectChanges();
-
   }
 
   cerrarModal(): void {
@@ -78,16 +81,46 @@ export class ListaPaises implements OnInit {
     this.cdr.detectChanges();
   }
 
-  abrirCrearPais(): void {
-    this.isCrearPaisOpen = true;
+  async sincronizar(): Promise<void> {
+    this.isSyncing = true;
+    this.cdr.detectChanges();
+
+    const [resSync, resCalculo] = await Promise.allSettled([
+      this.paisesService.sincronizarIndicadores(),
+      this.paisesService.recalcularIndices()
+    ]);
+
+    let huboExito = false;
+
+    if (resSync.status === 'fulfilled') {
+      this.alerta.show('Indicadores sincronizados exitosamente.', 'success');
+      huboExito = true;
+    } else {
+      const errorMsg = this.extraerError(resSync.reason, 'Error al sincronizar indicadores');
+      this.alerta.show(`Sincronización: ${errorMsg}`, 'error');
+    }
+
+    if (resCalculo.status === 'fulfilled') {
+      this.alerta.show('Índices recalculados exitosamente.', 'success');
+      huboExito = true;
+    } else {
+      const errorMsg = this.extraerError(resCalculo.reason, 'Error al recalcular índices');
+      this.alerta.show(`Cálculo de Índices: ${errorMsg}`, 'error');
+    }
+
+    if (huboExito) {
+      await this.cargarPaises();
+    }
+
+    this.isSyncing = false;
     this.cdr.detectChanges();
   }
 
-  onModalCrearPaisClosed(guardado: boolean): void {
-    this.isCrearPaisOpen = false;
-    this.cdr.detectChanges();
-    if (guardado) {
-      this.cargarPaises();
-    }
+  private extraerError(err: any, fallback: string): string {
+    if (err?.error?.detail) return err.error.detail;
+    if (err?.error?.error) return err.error.error;
+    if (err?.detail) return err.detail;
+    if (err?.message) return err.message;
+    return fallback;
   }
 }
