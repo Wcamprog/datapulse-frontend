@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://dominioproduccion.com/api' 
+  apiUrl: 'datapulse-backend-production-4291.up.railway.app/api' 
 };

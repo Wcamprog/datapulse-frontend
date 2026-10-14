@@ -1,4 +1,3 @@
-// En src/app/core/services/riesgo.ts
 import { Injectable } from '@angular/core';
 import { Api } from './api';
 
@@ -17,21 +16,41 @@ export interface DashboardResumen {
   total_paises: number;
   alertas_activas: number;
   total_portafolios: number;
-  promedio_irpc: number;
+  promedio_irpc: number | null;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+export type TipoIndicador =
+  | 'PIB' | 'INFLACION' | 'DESEMPLEO'
+  | 'DEUDA_PIB' | 'PIB_PERCAPITA' | 'BALANZA_COMERCIAL';
+
+export interface SerieTendencia {
+  codigo_iso: string;
+  nombre: string;
+  valores: (number | null)[];
+}
+
+export interface TendenciasResponse {
+  indicador: string;
+  anios: number[];
+  series: SerieTendencia[];
+}
+
+@Injectable({ providedIn: 'root' })
 export class Riesgo {
-  constructor(private api: Api) { }
+  constructor(private api: Api) {}
 
-  async getDatosMapa(): Promise<PaisMapa[]> {
-    return await this.api.get<PaisMapa[]>('dashboard/mapa/');
+  getDatosMapa(): Promise<PaisMapa[]> {
+    return this.api.get<PaisMapa[]>('dashboard/mapa/');
   }
 
-  async getResumen(): Promise<DashboardResumen> {
-    return await this.api.get<DashboardResumen>('dashboard/resumen/');
+  getResumen(): Promise<DashboardResumen> {
+    return this.api.get<DashboardResumen>('dashboard/resumen/');
   }
 
+  getTendencias(tipo: TipoIndicador, paises: string[]): Promise<TendenciasResponse> {
+    const params = new URLSearchParams();
+    params.set('tipo', tipo);
+    params.set('paises', paises.join(','));
+    return this.api.get<TendenciasResponse>(`dashboard/tendencias/?${params.toString()}`);
+  }
 }

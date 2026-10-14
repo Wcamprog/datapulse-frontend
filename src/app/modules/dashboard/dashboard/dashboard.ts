@@ -43,6 +43,11 @@ export class Dashboard implements OnInit {
         title: 'Portafolios',
         icon: 'pie_chart',
         route: '/dashboard/listar-portafolios'
+      },
+      {
+        title: 'Alertas',
+        icon: 'notifications_active',
+        route: '/dashboard/alertas'
       }
     ];
 

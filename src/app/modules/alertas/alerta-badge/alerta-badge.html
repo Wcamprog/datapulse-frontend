@@ -1,1 +1,9 @@
-<p>alerta-badge works!</p>
+<button mat-icon-button (click)="irAPanel()" matTooltip="Centro de Notificaciones">
+  <mat-icon 
+    [matBadge]="alertasService.unreadCount()" 
+    [matBadgeHidden]="alertasService.unreadCount() === 0" 
+    matBadgeColor="warn" 
+    matBadgeSize="small">
+    notifications
+  </mat-icon>
+</button>

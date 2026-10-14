@@ -1,0 +1,24 @@
+.ranking-panel { color: #1e293b; }
+.ranking-descripcion { margin: 0 0 12px; color: #64748b; font-size: 12px; }
+.ranking-lista { display: flex; flex-direction: column; gap: 4px; }
+.ranking-fila {
+  display: flex; align-items: center; gap: 10px; padding: 9px 8px;
+  border-radius: 9px; color: inherit; text-decoration: none;
+  transition: background-color 160ms ease;
+}
+.ranking-fila:hover, .ranking-fila:focus-visible { background: #f1f5f9; }
+.ranking-fila:focus-visible { outline: 2px solid #4053b5; outline-offset: 1px; }
+.ranking-posicion {
+  flex: 0 0 24px; color: #64748b; font-weight: 700; font-size: 12px; text-align: center;
+}
+.ranking-informacion { min-width: 0; flex: 1; }
+.ranking-identidad { display: flex; align-items: baseline; gap: 6px; margin-bottom: 7px; }
+.ranking-pais { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; font-size: 13px; }
+.ranking-iso { color: #94a3b8; font-size: 10px; }
+.ranking-barra { height: 6px; border-radius: 9px; background: #e2e8f0; overflow: hidden; }
+.ranking-barra span { display: block; height: 100%; border-radius: inherit; }
+.ranking-valor { flex: 0 0 66px; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.ranking-valor strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+.ranking-valor small { font-size: 10px; font-weight: 600; }
+.ranking-estado { color: #64748b; font-size: 13px; padding: 24px 8px; text-align: center; }
+.ranking-estado button { display: block; margin: 12px auto 0; padding: 7px 12px; cursor: pointer; }

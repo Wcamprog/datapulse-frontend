@@ -17,9 +17,9 @@ export class ListaPaises implements OnInit {
   isSyncing: boolean = false;
 
   totalItems: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 20;
   pageIndex: number = 0;
-  pageSizeOptions: number[] = [5, 10, 25];
+  pageSizeOptions: number[] = [10, 20, 50];
 
   isModalOpen: boolean = false;
   paisSeleccionado: any | null = null;
@@ -82,38 +82,29 @@ export class ListaPaises implements OnInit {
   }
 
   async sincronizar(): Promise<void> {
+    if (this.isSyncing) return;
+
     this.isSyncing = true;
     this.cdr.detectChanges();
 
-    const [resSync, resCalculo] = await Promise.allSettled([
-      this.paisesService.sincronizarIndicadores(),
-      this.paisesService.recalcularIndices()
-    ]);
+    try {
+      const resp: any = await this.paisesService.sincronizarIndicadores();
 
-    let huboExito = false;
+      const mensajeExito = resp?.mensaje || 'Sincronización en segundo plano iniciada correctamente.';
+      this.alerta.show(mensajeExito, 'success');
 
-    if (resSync.status === 'fulfilled') {
-      this.alerta.show('Indicadores sincronizados exitosamente.', 'success');
-      huboExito = true;
-    } else {
-      const errorMsg = this.extraerError(resSync.reason, 'Error al sincronizar indicadores');
-      this.alerta.show(`Sincronización: ${errorMsg}`, 'error');
-    }
-
-    if (resCalculo.status === 'fulfilled') {
-      this.alerta.show('Índices recalculados exitosamente.', 'success');
-      huboExito = true;
-    } else {
-      const errorMsg = this.extraerError(resCalculo.reason, 'Error al recalcular índices');
-      this.alerta.show(`Cálculo de Índices: ${errorMsg}`, 'error');
-    }
-
-    if (huboExito) {
       await this.cargarPaises();
-    }
+    } catch (error: any) {
+      const errorMsg = error?.error?.mensaje
+        || error?.error?.detail
+        || error?.error?.error
+        || this.extraerError(error, 'Error al sincronizar indicadores');
 
-    this.isSyncing = false;
-    this.cdr.detectChanges();
+      this.alerta.show(errorMsg, 'error');
+    } finally {
+      this.isSyncing = false;
+      this.cdr.detectChanges();
+    }
   }
 
   private extraerError(err: any, fallback: string): string {

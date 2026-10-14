@@ -1,1 +1,186 @@
-<p>detalle works!</p>
+<div class="detalle-container">
+  @if (isLoading) {
+    <div class="card-container loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Cargando análisis del portafolio...</span>
+    </div>
+  } @else {
+    <div class="header-bar">
+      <div class="header-left">
+        <button mat-icon-button (click)="volver()" matTooltip="Volver a la lista">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <div class="title-with-badge">
+            <h2>{{ portafolio?.nombre }}</h2>
+            <span class="badge" [class.badge-own]="esPropietario" [class.badge-public]="!esPropietario">
+              <mat-icon>{{ esPropietario ? 'person' : 'public' }}</mat-icon>
+              {{ esPropietario ? 'Propio' : 'Público' }}
+            </span>
+          </div>
+          <p class="desc">{{ portafolio?.descripcion || 'Sin descripción estratégica definida.' }}</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button mat-stroked-button color="primary" (click)="exportarPdf()" [disabled]="isExportingPdf">
+          <mat-icon>{{ isExportingPdf ? 'hourglass_empty' : 'picture_as_pdf' }}</mat-icon>
+          {{ isExportingPdf ? 'Generando...' : 'Exportar a PDF' }}
+        </button>
+        @if (esPropietario) {
+          <button mat-flat-button color="primary" (click)="abrirEditarPortafolio()">
+            <mat-icon>edit</mat-icon> Editar Portafolio
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="kpis-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-title">Monto Total Invertido (USD)</span>
+          <h3>${{ totalInvertidoUsd | number:'1.2-2' }}</h3>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon orange">
+          <mat-icon>shield</mat-icon>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-title">Riesgo Promedio Ponderado</span>
+          <h3>{{ riesgoPromedioPonderado }} / 100</h3>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon purple">
+          <mat-icon>layers</mat-icon>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-title">Posiciones Registradas</span>
+          <h3>{{ portafolio?.posiciones?.length || 0 }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <app-distribucion-chart
+      [posiciones]="portafolio?.posiciones || []"
+      [resumen]="resumen">
+    </app-distribucion-chart>
+
+    <div class="card-container table-section">
+      <div class="table-header">
+        <div>
+          <h3>Posiciones de Inversión</h3>
+          <p>Supervisa activos, montos y horizontes de liquidación.</p>
+        </div>
+        @if (esPropietario) {
+          <button mat-flat-button color="primary" (click)="abrirCrearPosicion()">
+            <mat-icon>add</mat-icon> Agregar Posición
+          </button>
+        }
+      </div>
+
+      <table mat-table [dataSource]="portafolio?.posiciones || []" class="custom-table">
+
+        <ng-container matColumnDef="pais">
+          <th mat-header-cell *matHeaderCellDef> País </th>
+          <td mat-cell *matCellDef="let pos">
+            <strong>{{ getNombrePais(pos.pais) }}</strong> ({{ pos.pais }})
+          </td>
+        </ng-container>
+
+        <!-- Tipo de Activo -->
+        <ng-container matColumnDef="tipo_activo">
+          <th mat-header-cell *matHeaderCellDef> Tipo de Activo </th>
+          <td mat-cell *matCellDef="let pos">
+            <span class="asset-chip">{{ pos.tipo_activo }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Monto USD -->
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef> Monto Invertido </th>
+          <td mat-cell *matCellDef="let pos">
+            <strong>${{ pos.monto_inversion_usd | number:'1.2-2' }}</strong>
+          </td>
+        </ng-container>
+
+        <!-- Fecha Entrada -->
+        <ng-container matColumnDef="fecha_entrada">
+          <th mat-header-cell *matHeaderCellDef> Entrada </th>
+          <td mat-cell *matCellDef="let pos"> {{ pos.fecha_entrada }} </td>
+        </ng-container>
+
+        <!-- Fecha Salida -->
+        <ng-container matColumnDef="fecha_salida">
+          <th mat-header-cell *matHeaderCellDef> Salida </th>
+          <td mat-cell *matCellDef="let pos"> {{ pos.fecha_salida || '—' }} </td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef> Estado </th>
+          <td mat-cell *matCellDef="let pos">
+            <span class="status-indicator" [class.active]="!pos.fecha_salida" [class.inactive]="!!pos.fecha_salida">
+              {{ !pos.fecha_salida ? 'Abierta' : 'Cerrada' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="text-right"> Acciones </th>
+          <td mat-cell *matCellDef="let pos" class="text-right">
+            @if (esPropietario) {
+              <button mat-icon-button color="primary" (click)="abrirEditarPosicion(pos)" matTooltip="Editar posición">
+                <mat-icon>edit</mat-icon>
+              </button>
+              @if (!pos.fecha_salida) {
+                <button mat-icon-button color="warn" (click)="confirmarCerrarPosicion(pos)" matTooltip="Cerrar posición">
+                  <mat-icon>lock</mat-icon>
+                </button>
+              }
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" colspan="7">
+            Este portafolio aún no tiene posiciones agregadas. Haz clic en "Agregar Posición".
+          </td>
+        </tr>
+      </table>
+    </div>
+  }
+</div>
+
+<app-posicion-form
+  [isOpen]="isPosicionModalOpen"
+  [portafolioId]="portafolioId"
+  [posicionAEditar]="posicionSeleccionada"
+  (closed)="onPosicionModalClosed($event)">
+</app-posicion-form>
+
+<app-portafolio-modal
+  [isOpen]="isPortafolioModalOpen"
+  [portafolioEditar]="portafolio"
+  (closed)="onPortafolioModalClosed($event)">
+</app-portafolio-modal>
+
+<app-confirm-dialog
+  [isOpen]="isConfirmCerrarOpen"
+  title="Cerrar Posición de Inversión"
+  [message]="'¿Deseas liquidar y cerrar la posición de ' + posicionACerrar?.tipo_activo + ' en ' + posicionACerrar?.pais + '? Esta acción registrará la fecha de salida hoy.'"
+  confirmText="Cerrar Posición"
+  confirmColor="warn"
+  (confirmed)="ejecutarCerrarPosicion()"
+  (cancelled)="cancelarCerrarPosicion()">
+</app-confirm-dialog>

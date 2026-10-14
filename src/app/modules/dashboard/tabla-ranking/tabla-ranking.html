@@ -1,1 +1,36 @@
-<p>tabla-ranking works!</p>
+<div class="ranking-panel">
+  <p class="ranking-descripcion">Puntuación más alta = menor riesgo país.</p>
+
+  @if (isLoading) {
+    <div class="ranking-estado" role="status">Cargando clasificación...</div>
+  } @else if (error) {
+    <div class="ranking-estado" role="alert">
+      No fue posible consultar el ranking.
+      <button type="button" (click)="cargarRanking()">Reintentar</button>
+    </div>
+  } @else if (paisesRanking.length === 0) {
+    <p class="ranking-estado">Todavía no hay índices calculados para los países.</p>
+  } @else {
+    <div class="ranking-lista">
+      @for (pais of paisesRanking; track pais.codigo_iso; let posicion = $index) {
+        <a class="ranking-fila" [routerLink]="['/dashboard/listar-paises', pais.codigo_iso]"
+           [attr.aria-label]="'Ver detalles de ' + pais.nombre + ', IRPC ' + pais.irpc">
+          <span class="ranking-posicion">{{ posicion + 1 }}</span>
+          <div class="ranking-informacion">
+            <div class="ranking-identidad">
+              <span class="ranking-pais" [title]="pais.nombre">{{ pais.nombre }}</span>
+              <span class="ranking-iso">{{ pais.codigo_iso }}</span>
+            </div>
+            <div class="ranking-barra" aria-hidden="true">
+              <span [style.width.%]="pais.irpc" [style.background-color]="pais.color"></span>
+            </div>
+          </div>
+          <div class="ranking-valor">
+            <strong>{{ pais.irpc | number:'1.1-1' }}</strong>
+            <small [style.color]="pais.color">{{ nombreNivel(pais.nivel) }}</small>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

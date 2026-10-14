@@ -75,7 +75,6 @@ export class MapaRiesgo implements OnInit, AfterViewInit, OnDestroy {
     this.paises.forEach(pais => {
       if (!pais.latitud || !pais.longitud) return;
 
-      // Círculo interactivo con color según IRPC
       const marker = L.circleMarker([pais.latitud, pais.longitud], {
         radius: 12,
         fillColor: pais.color || '#94a3b8',
@@ -85,7 +84,6 @@ export class MapaRiesgo implements OnInit, AfterViewInit, OnDestroy {
         fillOpacity: 0.85
       }).addTo(this.map!);
 
-      // Tooltip para el mouse
       const tooltipContent = `
         <div style="font-family: inherit; font-size: 13px; line-height: 1.4;">
           <strong>${pais.nombre} (${pais.codigo_iso})</strong><br/>

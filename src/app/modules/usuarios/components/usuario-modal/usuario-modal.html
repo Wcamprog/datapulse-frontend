@@ -3,7 +3,7 @@
   [title]="isEditando ? 'Editar Usuario' : 'Crear Nuevo Usuario'"
   [icon]="isEditando ? 'manage_accounts' : 'person_add'"
   [maxWidth]="'540px'"
-  (close)="cancelar()">
+  (onClose)="cancelar()">
 
   <div modal-body class="usuario-modal-body">
     <mat-form-field appearance="outline" class="w-100">

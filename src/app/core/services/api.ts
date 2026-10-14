@@ -14,6 +14,10 @@ export class Api {
     private loading: Loading
   ) {}
 
+  private getUrl(endpoint: string): string {
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+    return `${this.baseUrl}/${cleanEndpoint}`;
+  }
   private async toPromise<T>(obs$: Observable<any>): Promise<T> {
     const mapped$= obs$.pipe(
       map(response => response?.data ?? response)
@@ -39,4 +43,12 @@ export class Api {
   delete<T>(endpoint: string): Promise<T> {
     return this.toPromise<T>(this.http.delete<any>(`${this.baseUrl}/${endpoint}`));
   }
+
+  getBlob(endpoint: string): Promise<Blob> {
+    return firstValueFrom(
+      this.http.get(this.getUrl(endpoint), { responseType: 'blob' })
+    );
+  }
+
+  
 }

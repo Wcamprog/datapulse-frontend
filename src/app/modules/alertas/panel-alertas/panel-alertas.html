@@ -1,1 +1,124 @@
-<p>panel-alertas works!</p>
+<div class="panel-alertas-container">
+  <div class="page-header">
+    <div>
+      <div class="title-with-badge">
+        <h2>Panel de Notificaciones y Alertas</h2>
+        @if (pendientesCount > 0) {
+          <span class="badge-pendientes">{{ pendientesCount }} no leídas</span>
+        }
+      </div>
+      <p>Supervisa desviaciones macroeconómicas, alertas de riesgo e incidencias de portafolios.</p>
+    </div>
+
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="marcarTodas()"
+      [disabled]="pendientesCount === 0 || isProcessingMassive">
+      <mat-icon>done_all</mat-icon>
+      <span>{{ isProcessingMassive ? 'Actualizando...' : 'Marcar Todas como Leídas' }}</span>
+    </button>
+  </div>
+
+  <div class="filtros-card">
+    <mat-form-field appearance="outline" class="filtro-control">
+      <mat-label>Tipo de Evento</mat-label>
+      <mat-select [(value)]="filtroTipo" (selectionChange)="onFiltroChange()">
+        <mat-option value="">Todos los tipos</mat-option>
+        @for (tipo of tiposDisponibles; track tipo) {
+          <mat-option [value]="tipo">{{ tipo }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filtro-control">
+      <mat-label>Severidad</mat-label>
+      <mat-select [(value)]="filtroSeveridad" (selectionChange)="onFiltroChange()">
+        <mat-option value="">Todas las severidades</mat-option>
+        @for (sev of severidadesDisponibles; track sev) {
+          <mat-option [value]="sev">{{ sev }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filtro-control">
+      <mat-label>Estado de Lectura</mat-label>
+      <mat-select [(value)]="filtroEstado" (selectionChange)="onFiltroChange()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option value="false">Solo No Leídas</mat-option>
+        <mat-option value="true">Solo Leídas</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button class="btn-limpiar" (click)="limpiarFiltros()" matTooltip="Restablecer filtros">
+      <mat-icon>filter_alt_off</mat-icon> Limpiar
+    </button>
+  </div>
+
+  <div class="card-container">
+    <div class="alertas-feed">
+      @if (isLoading) {
+        <div class="estado-box">
+          <mat-spinner diameter="36"></mat-spinner>
+          <span>Cargando registro de alertas...</span>
+        </div>
+      } @else if (alertas.length === 0) {
+        <div class="estado-box empty">
+          <mat-icon class="empty-icon">notifications_off</mat-icon>
+          <h3>No hay alertas que coincidan</h3>
+          <p>No se encontraron eventos registrados con los criterios seleccionados.</p>
+        </div>
+      } @else {
+        @for (alerta of alertas; track alerta.id) {
+          <div class="alerta-card" [class.leida]="alerta.leida" [class]="'sev-' + alerta.severidad.toLowerCase()">
+            <div class="alerta-icon-badge">
+              <mat-icon>{{ getSeveridadIcon(alerta.severidad) }}</mat-icon>
+            </div>
+
+            <div class="alerta-body">
+              <div class="alerta-tags">
+                <span class="chip-severidad" [class]="alerta.severidad.toLowerCase()">
+                  {{ alerta.severidad }}
+                </span>
+                <span class="chip-tipo">{{ alerta.tipo }}</span>
+                @if (alerta.pais) {
+                  <span class="chip-pais">{{ alerta.pais }}</span>
+                }
+                <span class="alerta-fecha">
+                  {{ (alerta.fecha_creacion || alerta.created_at) | date:'medium' }}
+                </span>
+              </div>
+              <p class="alerta-mensaje">{{ alerta.mensaje }}</p>
+            </div>
+
+            <div class="alerta-actions">
+              @if (!alerta.leida) {
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="marcarIndividual(alerta)"
+                  matTooltip="Marcar como leída">
+                  <mat-icon>mark_email_read</mat-icon>
+                </button>
+              } @else {
+                <span class="status-leida">
+                  <mat-icon>done</mat-icon> Leída
+                </span>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      aria-label="Seleccionar página de alertas"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>

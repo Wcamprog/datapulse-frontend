@@ -21,17 +21,31 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<boolean>(this.hasToken());
+
+  private currentUserSubject = new BehaviorSubject<boolean>(
+    this.isAuthenticated()
+  );
+
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private api: Api) {}
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem('token');
+  isAuthenticated(): boolean {
+    const payload = this.getDecodedToken();
+
+    if (!payload || typeof payload.exp !== 'number') {
+      return false;
+    }
+
+    return Number.isFinite(payload.exp) &&
+           Date.now() < payload.exp * 1000;
   }
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await this.api.post<LoginResponse>('auth/login/', { email, password });
+    const response = await this.api.post<LoginResponse>(
+      'auth/login/',
+      { email, password }
+    );
 
     if (response && response.access) {
       localStorage.setItem('token', response.access);
@@ -40,7 +54,7 @@ export class AuthService {
         localStorage.setItem('refresh_token', response.refresh);
       }
 
-      this.currentUserSubject.next(true);
+      this.currentUserSubject.next(this.isAuthenticated());
     }
 
     return response;
@@ -49,31 +63,43 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
+
     this.currentUserSubject.next(false);
   }
 
-
   getDecodedToken(): TokenPayload | null {
     const token = localStorage.getItem('token');
+
     if (!token) return null;
 
     try {
       const parts = token.split('.');
       if (parts.length !== 3) return null;
 
-      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const base64 = parts[1]
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          )
           .join('')
       );
 
       return JSON.parse(jsonPayload) as TokenPayload;
+
     } catch (error) {
       console.error('Error al decodificar el token JWT:', error);
       return null;
     }
+  }
+
+  getCurrentUserId(): number | null {
+    const payload = this.getDecodedToken();
+    return payload?.user_id ?? null;
   }
 
   getUserRole(): string | null {
@@ -82,13 +108,13 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const payload = this.getDecodedToken();
-    if (!payload) return false;
-
-    if (payload.exp && Date.now() >= payload.exp * 1000) {
+    if (!this.isAuthenticated()) {
       return false;
     }
 
-    return payload.rol === 'ADMIN' || payload.is_superuser === true;
+    const payload = this.getDecodedToken();
+
+    return payload?.rol === 'ADMIN' ||
+           payload?.is_superuser === true;
   }
 }
