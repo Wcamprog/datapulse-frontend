@@ -1,0 +1,119 @@
+.portafolios-container {
+  padding: 24px;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header-actions h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.header-actions p {
+  color: #64748b;
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.card-container {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.custom-table {
+  width: 100%;
+}
+
+.item-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-icon {
+  color: #94a3b8;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.badge-own {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge-public {
+  background-color: #ecfdf5;
+  color: #065f46;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-indicator.active {
+  color: #166534;
+}
+
+.status-indicator.inactive {
+  color: #64748b;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.loading-row,
+.no-data {
+  text-align: center;
+  padding: 36px;
+  color: #64748b;
+}
+
+.loading-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+mat-paginator {
+  background: transparent;
+  border-top: 1px solid #f1f5f9;
+}

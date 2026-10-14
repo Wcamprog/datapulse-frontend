@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard'; 
-
+import { NotFound } from './shared/not-found/not-found';
 export const routes: Routes = [
   {
     path: 'auth',
@@ -16,8 +16,8 @@ export const routes: Routes = [
     redirectTo: 'dashboard',
     pathMatch: 'full'
   },
-  {
-    path: '**',
-    redirectTo: 'dashboard'
+  { 
+    path: '**', 
+    component: NotFound 
   }
 ];

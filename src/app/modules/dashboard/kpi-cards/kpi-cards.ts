@@ -45,7 +45,9 @@ export class KpiCards implements OnInit {
   }
 
   private generarKpis(data: DashboardResumen): void {
-    const irpcColor = this.obtenerColorIRPC(data.promedio_irpc);
+    const irpcColor = data.promedio_irpc === null
+      ? '#64748b'
+      : this.obtenerColorIRPC(data.promedio_irpc);
 
     this.kpiItems = [
       {
@@ -75,8 +77,8 @@ export class KpiCards implements OnInit {
       {
         id: 'irpc',
         label: 'Promedio IRPC Región',
-        value: data.promedio_irpc,
-        suffix: '/ 100',
+        value: data.promedio_irpc ?? 'Sin datos',
+        suffix: data.promedio_irpc === null ? undefined : '/ 100',
         subtitle: 'Índice de riesgo',
         icon: 'speed',
         customColor: irpcColor
@@ -85,9 +87,9 @@ export class KpiCards implements OnInit {
   }
 
   private obtenerColorIRPC(promedio: number): string {
-    if (promedio <= 25) return '#10b981';
-    if (promedio <= 50) return '#f59e0b'; 
-    if (promedio <= 75) return '#f97316';
+    if (promedio >= 75) return '#10b981';
+    if (promedio >= 50) return '#f59e0b';
+    if (promedio >= 25) return '#f97316';
     return '#ef4444';
   }
 }

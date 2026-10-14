@@ -1,0 +1,250 @@
+.panel-alertas-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title-with-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-with-badge h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.badge-pendientes {
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.page-header p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.btn-masivo {
+  height: 44px;
+}
+
+/* Barra de Filtros */
+.filtros-card {
+  background: #ffffff;
+  padding: 16px 20px 4px 20px;
+  border-radius: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.filtro-control {
+  flex: 1;
+  min-width: 190px;
+}
+
+.btn-limpiar {
+  margin-bottom: 16px;
+  height: 52px;
+}
+
+/* Listado de tarjetas de alerta */
+.alertas-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.alerta-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #e2e8f0;
+  border-left: 6px solid #94a3b8;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.alerta-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.08);
+}
+
+.alerta-card.leida {
+  background: #f8fafc;
+  opacity: 0.65;
+}
+
+/* Colores e Identificadores por Severidad */
+.alerta-card.sev-baja { border-left-color: #10b981; }
+.alerta-card.sev-media { border-left-color: #0284c7; }
+.alerta-card.sev-alta { border-left-color: #f59e0b; }
+.alerta-card.sev-critica { border-left-color: #ef4444; }
+
+.alerta-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sev-baja .alerta-icon-badge { background: #dcfce7; color: #15803d; }
+.sev-media .alerta-icon-badge { background: #e0f2fe; color: #0284c7; }
+.sev-alta .alerta-icon-badge { background: #fef3c7; color: #b45309; }
+.sev-critica .alerta-icon-badge { background: #fee2e2; color: #b91c1c; }
+
+.alerta-body {
+  flex: 1;
+}
+
+.alerta-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.chip-severidad {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.chip-severidad.baja { background: #dcfce7; color: #15803d; }
+.chip-severidad.media { background: #e0f2fe; color: #0284c7; }
+.chip-severidad.alta { background: #fef3c7; color: #b45309; }
+.chip-severidad.critica { background: #fee2e2; color: #b91c1c; }
+
+.chip-tipo {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.chip-pais {
+  background: #e2e8f0;
+  color: #1e293b;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.alerta-fecha {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-left: auto;
+}
+
+.alerta-mensaje {
+  margin: 0;
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.alerta-actions {
+  display: flex;
+  align-items: center;
+}
+
+.status-leida {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-leida mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.estado-box {
+  background: #ffffff;
+  padding: 48px;
+  border-radius: 12px;
+  text-align: center;
+  color: #64748b;
+  border: 1px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-icon {
+  font-size: 44px;
+  width: 44px;
+  height: 44px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.estado-box h3 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 16px;
+}
+
+.estado-box p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.card-container {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.alertas-feed {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+mat-paginator {
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+}

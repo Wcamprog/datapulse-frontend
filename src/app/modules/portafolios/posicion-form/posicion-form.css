@@ -1,0 +1,33 @@
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.btn-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@media (max-width: 600px) {
+  .two-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.btn-label-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

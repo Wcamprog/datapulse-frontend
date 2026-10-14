@@ -25,6 +25,10 @@ const routes: Routes = [
         path: 'usuarios',
         loadChildren: () => import('../usuarios/usuarios-module').then(m => m.UsuariosModule),
         canActivate: [adminGuard]
+      },
+      {
+        path: 'alertas',
+        loadChildren: () => import('../alertas/alertas-module').then(m => m.AlertasModule)
       }
     ]
   }

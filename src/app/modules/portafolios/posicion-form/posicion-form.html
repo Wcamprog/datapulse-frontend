@@ -1,1 +1,81 @@
-<p>posicion-form works!</p>
+<app-modal
+  [isOpen]="isOpen"
+  [title]="posicionAEditar ? 'Editar Posición' : 'Agregar Posición de Inversión'"
+  [icon]="posicionAEditar ? 'edit' : 'add_chart'"
+  maxWidth="560px"
+  (onClose)="cerrar(false)">
+
+  <div modal-body>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" id="posicionForm" class="modal-form">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>País Destino</mat-label>
+        <mat-select formControlName="pais">
+          @for (pais of paises; track pais.codigo_iso) {
+            <mat-option [value]="pais.codigo_iso">
+              {{ pais.nombre }} ({{ pais.codigo_iso }}) - {{ pais.moneda_codigo }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>flag</mat-icon>
+        @if (form.get('pais')?.touched && form.get('pais')?.hasError('required')) {
+          <mat-error>El país es requerido.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="two-cols">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Tipo de Activo</mat-label>
+          <mat-select formControlName="tipo_activo">
+            @for (tipo of tiposActivo; track tipo.valor) {
+              <mat-option [value]="tipo.valor">{{ tipo.etiqueta }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matPrefix>category</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Monto (USD)</mat-label>
+          <input matInput type="number" formControlName="monto_inversion_usd" placeholder="25000" min="1" step="any">
+          <mat-icon matPrefix>attach_money</mat-icon>
+          @if (form.get('monto_inversion_usd')?.touched && form.get('monto_inversion_usd')?.hasError('required')) {
+            <mat-error>Monto obligatorio.</mat-error>
+          }
+          @if (form.get('monto_inversion_usd')?.touched && form.get('monto_inversion_usd')?.hasError('min')) {
+            <mat-error>Debe ser mayor a 0.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Fecha de Entrada</mat-label>
+        <input matInput type="date" formControlName="fecha_entrada">
+        <mat-icon matPrefix>calendar_today</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Notas (Opcional)</mat-label>
+        <textarea matInput formControlName="notas" rows="2" maxlength="200" placeholder="Estrategia, bono o activo específico..."></textarea>
+        <mat-hint align="end">{{ form.get('notas')?.value?.length || 0 }} / 200</mat-hint>
+      </mat-form-field>
+
+    </form>
+  </div>
+
+  <div modal-footer>
+    <button mat-stroked-button type="button" (click)="cerrar(false)" [disabled]="isSaving">
+      Cancelar
+    </button>
+    <button mat-flat-button color="primary" type="submit" form="posicionForm" [disabled]="form.invalid || isSaving">
+      @if (isSaving) {
+        <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+        <span>Guardando...</span>
+      } @else {
+        <span class="btn-label-icon">
+          <mat-icon>{{ posicionAEditar ? 'save' : 'add' }}</mat-icon>
+          <span>{{ posicionAEditar ? 'Guardar Cambios' : 'Agregar Posición' }}</span>
+        </span>
+      }
+    </button>
+  </div>
+</app-modal>

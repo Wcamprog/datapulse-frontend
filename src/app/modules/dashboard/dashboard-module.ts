@@ -18,7 +18,7 @@ import { Alerta } from '../alerta/alerta';
 import { ResumenGeneral } from './resumen-general/resumen-general';
 import { KpiCards } from './kpi-cards/kpi-cards';
 import { GraficoTendencias } from './grafico-tendencias/grafico-tendencias';
-
+import { AlertasModule } from '../alertas/alertas-module';
 @NgModule({
   declarations: [
     Dashboard,
@@ -26,7 +26,7 @@ import { GraficoTendencias } from './grafico-tendencias/grafico-tendencias';
     KpiCards,
     MapaRiesgo,
     TablaRanking,
-    GraficoTendencias
+    GraficoTendencias,
   ],
   imports: [
     CommonModule,
@@ -38,7 +38,8 @@ import { GraficoTendencias } from './grafico-tendencias/grafico-tendencias';
     MatListModule,
     PaisesModule,
     Alerta,
-    MatCardModule
+    MatCardModule,
+    AlertasModule
   ]
 })
 export class DashboardModule { }

@@ -1,1 +1,25 @@
-<p>distribucion-chart works!</p>
+<div class="charts-container">
+  @if (posiciones && posiciones.length > 0) {
+    <div class="charts-grid">
+      <!-- Gráfico Pie: País -->
+      <div class="chart-card">
+        <h4>Distribución por País</h4>
+        <div class="canvas-wrapper">
+          <canvas #piePaisCanvas></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico Donut: Tipo de Activo -->
+      <div class="chart-card">
+        <h4>Distribución por Tipo de Activo</h4>
+        <div class="canvas-wrapper">
+          <canvas #donutActivoCanvas></canvas>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>Registra al menos una posición activa para generar los gráficos de distribución[cite: 12].</p>
+    </div>
+  }
+</div>

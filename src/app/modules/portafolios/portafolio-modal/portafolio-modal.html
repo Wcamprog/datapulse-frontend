@@ -1,0 +1,60 @@
+<app-modal
+  [isOpen]="isOpen"
+  [title]="isEditando ? 'Editar Portafolio' : 'Nuevo Portafolio de Inversión'"
+  [icon]="isEditando ? 'edit' : 'pie_chart'"
+  [maxWidth]="'560px'"
+  (onClose)="cancelar()">
+
+  <div modal-body class="form-body">
+    <form [formGroup]="form" (ngSubmit)="guardar()" id="portafolioForm" class="form-container">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nombre del Portafolio</mat-label>
+        <input matInput formControlName="nombre" placeholder="Ej: Fondo Renta Fija LATAM" maxlength="100">
+        <mat-icon matSuffix>folder</mat-icon>
+        @if (form.get('nombre')?.touched && form.get('nombre')?.hasError('required')) {
+          <mat-error>El nombre del portafolio es obligatorio.</mat-error>
+        }
+        @if (form.get('nombre')?.touched && form.get('nombre')?.hasError('minlength')) {
+          <mat-error>Debe contener al menos 3 caracteres.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Descripción / Estrategia</mat-label>
+        <textarea matInput formControlName="descripcion" rows="3" placeholder="Describe los objetivos y perfil de riesgo..." maxlength="500"></textarea>
+        <mat-hint align="end">{{ form.get('descripcion')?.value?.length || 0 }} / 500</mat-hint>
+      </mat-form-field>
+
+      <div class="switches-box">
+        <div class="switch-row">
+          <mat-slide-toggle formControlName="es_publico" color="primary">
+            <span class="toggle-title">Portafolio Público</span>
+          </mat-slide-toggle>
+          <p class="toggle-sub">Permite que otros analistas vean sus métricas y posiciones[cite: 12].</p>
+        </div>
+
+        @if (isEditando) {
+          <div class="switch-row">
+            <mat-slide-toggle formControlName="activo" color="primary">
+              <span class="toggle-title">Estado Activo</span>
+            </mat-slide-toggle>
+            <p class="toggle-sub">Define si el portafolio sigue vigente para métricas globales.</p>
+          </div>
+        }
+      </div>
+
+    </form>
+  </div>
+
+  <div modal-footer class="actions-footer">
+    <button mat-button type="button" (click)="cancelar()" [disabled]="guardando">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" form="portafolioForm" [disabled]="form.invalid || guardando">
+      @if (guardando) {
+        <span>Guardando...</span>
+      } @else {
+        <span>{{ isEditando ? 'Actualizar' : 'Crear Portafolio' }}</span>
+      }
+    </button>
+  </div>
+</app-modal>

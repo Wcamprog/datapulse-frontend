@@ -1,1 +1,45 @@
-<p>grafico-tendencias works!</p>
+<div class="tendencias-panel">
+  <div class="tendencias-filtros">
+    <label class="indicador-control">
+      <span>Indicador económico</span>
+      <select [value]="indicadorSeleccionado" (change)="cambiarIndicador($event)">
+        @for (indicador of indicadores; track indicador.valor) {
+          <option [value]="indicador.valor">{{ indicador.texto }}</option>
+        }
+      </select>
+    </label>
+    <div class="paises-filtro">
+      <span>Comparar países (máximo {{ maxPaises }})</span>
+      <div class="paises-opciones" role="group" aria-label="Países para comparar">
+        @for (pais of paisesDisponibles; track pais.codigo_iso) {
+          <button type="button" class="pais-opcion"
+                  [class.seleccionado]="estaSeleccionado(pais.codigo_iso)"
+                  [attr.aria-pressed]="estaSeleccionado(pais.codigo_iso)"
+                  [disabled]="!estaSeleccionado(pais.codigo_iso) && codigosSeleccionados.length >= maxPaises"
+                  (click)="alternarPais(pais.codigo_iso)">
+            {{ pais.nombre }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="grafico-contenedor">
+    <canvas #canvasTendencias [attr.aria-label]="'Evolución histórica de ' + indicadorSeleccionado"
+            role="img"></canvas>
+    @if (isLoading) {
+      <div class="grafico-estado" role="status">Cargando tendencias...</div>
+    } @else if (error) {
+      <div class="grafico-estado" role="alert">
+        <p>No se pudo consultar la evolución histórica.</p>
+        <button type="button" (click)="cargarTendencias()">Reintentar</button>
+      </div>
+    } @else if (sinDatos) {
+      <div class="grafico-estado">
+        No hay datos disponibles para esta combinación de países e indicador.
+      </div>
+    }
+  </div>
+  <p class="nota-grafico">Los puntos sin información no se interpretan como cero.
+    Se muestran hasta cinco años con datos disponibles para el indicador.</p>
+</div>
